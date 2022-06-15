@@ -1,5 +1,9 @@
 {
-  "name": "pdf.js",
+  "name": "@crimson-education/rv-pdf-viewer",
+  "author": "Crimson Education",
+  "files": [
+    "build"
+  ],
   "devDependencies": {
     "@babel/core": "^7.18.2",
     "@babel/plugin-transform-modules-commonjs": "^7.18.2",
@@ -65,12 +69,9 @@
     "wintersmith": "^2.5.0",
     "yargs": "^17.5.1"
   },
-  "scripts": {
-    "postinstall": "cross-env PUPPETEER_PRODUCT=firefox node node_modules/puppeteer/install.js"
-  },
   "repository": {
     "type": "git",
-    "url": "git://github.com/mozilla/pdf.js.git"
+    "url": "https://github.com/crimson-education/rv-pdf-viewer"
   },
-  "license": "Apache-2.0"
+  "version": "0.2.0"
 }

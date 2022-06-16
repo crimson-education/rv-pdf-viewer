@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-private-class-members */
 /* Copyright 2012 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -156,10 +157,10 @@ class SecondaryToolbar {
 
     // Bind the event listeners for click, cursor tool, and scroll/spread mode
     // actions.
-    this.#bindClickListeners();
-    this.#bindCursorToolsListener(options);
-    this.#bindScrollModeListener(options);
-    this.#bindSpreadModeListener(options);
+    // this.#bindClickListeners();
+    // this.#bindCursorToolsListener(options);
+    // this.#bindScrollModeListener(options);
+    // this.#bindSpreadModeListener(options);
   }
 
   /**

@@ -1463,3 +1463,14 @@ dialog :link {
     display: none;
   }
 }
+
+/* Custom RV Css */
+
+button#secondaryToolbarToggle.toolbarButton,
+button#presentationMode,
+button#openFile,
+button#print,
+button#download, 
+a#viewBookmark {
+  display: none;
+}

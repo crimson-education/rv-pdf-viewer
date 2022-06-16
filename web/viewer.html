@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿<!-- ATTENTION: do not indent the comment directives (#if, #endif, etc.) as it breaks the build process and let dev-only blocks appear in prod build, which breaks the viewer -->
+<!DOCTYPE html>
 <!--
 Copyright 2012 Mozilla Foundation
 
@@ -278,6 +279,16 @@ See https://github.com/adobe-type-tools/cmap-resources
                 <button id="presentationMode" class="toolbarButton hiddenLargeView" title="Switch to Presentation Mode" tabindex="43" data-l10n-id="presentation_mode">
                   <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
                 </button>
+                <button
+                id="toggleHandCursor"
+                class="toolbarButton"
+                title="Toggle Hand Tool"
+                tabindex="44"
+                data-l10n-id="toggle_hand_cursor"
+                aria-checked="false"
+              >
+                <span data-l10n-id="cursor_hand_tool_label">Hand Tool</span>
+              </button>
 
 <!--#if GENERIC-->
                 <button id="openFile" class="toolbarButton hiddenLargeView" title="Open File" tabindex="44" data-l10n-id="open_file">

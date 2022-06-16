@@ -121,6 +121,16 @@ class PDFCursorTools {
       this.switchTool(evt.tool);
     });
 
+    this.eventBus._on("togglehandcursortool", _evt => {
+      this.switchTool(
+        this.active === CursorTool.HAND ? CursorTool.SELECT : CursorTool.HAND
+      );
+      this.eventBus.dispatch("handcursortooltoggled", {
+        source: this,
+        tool: this.active,
+      });
+    });
+
     this.eventBus._on("presentationmodechanged", evt => {
       switch (evt.state) {
         case PresentationModeState.FULLSCREEN: {

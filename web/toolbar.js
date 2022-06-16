@@ -23,6 +23,7 @@ import {
   noContextMenuHandler,
 } from "./ui_utils.js";
 import { AnnotationEditorType } from "pdfjs-lib";
+import { CursorTool } from "./pdf_cursor_tools.js";
 
 const PAGE_NUMBER_LOADING_INDICATOR = "visiblePageIsLoading";
 
@@ -43,7 +44,7 @@ const PAGE_NUMBER_LOADING_INDICATOR = "visiblePageIsLoading";
  * @property {HTMLButtonElement} viewFind - Button to open find bar.
  * @property {HTMLButtonElement} openFile - Button to open a new document.
  * @property {HTMLButtonElement} presentationModeButton - Button to switch to
- *   presentation mode.
+ * @property {HTMLButtonElement} toggleHandCursorButton
  * @property {HTMLButtonElement} editorNoneButton - Button to disable editing.
  * @property {HTMLButtonElement} editorFreeTextButton - Button to switch to
  *   FreeText editing.
@@ -88,6 +89,11 @@ class Toolbar {
         element: options.editorInkButton,
         eventName: "switchannotationeditormode",
         eventDetails: { mode: AnnotationEditorType.INK },
+      },
+      {
+        element: options.toggleHandCursorButton,
+        eventName: "togglehandcursortool",
+        eventDetails: { tool: "" },
       },
     ];
     if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
@@ -205,6 +211,16 @@ class Toolbar {
     });
 
     this.#bindEditorToolsListener(options);
+    this.#bindToggleHandToolListener(options);
+  }
+
+  #bindToggleHandToolListener({ toggleHandCursorButton }) {
+    this.eventBus._on("cursortoolchanged", function ({ tool }) {
+      const isHand = tool === CursorTool.HAND;
+
+      toggleHandCursorButton.classList.toggle("toggled", isHand);
+      toggleHandCursorButton.setAttribute("aria-checked", isHand);
+    });
   }
 
   #bindEditorToolsListener({

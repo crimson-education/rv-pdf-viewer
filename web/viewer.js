@@ -98,6 +98,7 @@ function getViewerConfiguration() {
       editorFreeTextButton: document.getElementById("editorFreeText"),
       editorInkButton: document.getElementById("editorInk"),
       presentationModeButton: document.getElementById("presentationMode"),
+      toggleHandCursorButton: document.getElementById("toggleHandCursor"),
       download: document.getElementById("download"),
       viewBookmark: document.getElementById("viewBookmark"),
     },

@@ -827,6 +827,10 @@ select {
   mask-image: var(--toolbarButton-presentationMode-icon);
 }
 
+#toggleHandCursor::before {
+  mask-image: var(--secondaryToolbarButton-handTool-icon);
+}
+
 #editorNone::before {
   mask-image: var(--toolbarButton-editorNone-icon);
 }

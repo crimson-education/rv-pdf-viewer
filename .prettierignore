@@ -1,0 +1,2 @@
+# this is needed as the gulp tasks uses a custom builder (./external/builder/builder.js) that parses html comments to include/exclude blocks, but prettier indents these comment directives and break them
+web/viewer.html

@@ -2,7 +2,7 @@
   "name": "@crimson-education/rv-pdf-viewer",
   "author": "Crimson Education",
   "files": [
-    "build/generic"
+    "build/minified"
   ],
   "scripts": {
     "build": "gulp rv"
@@ -79,5 +79,5 @@
     "type": "git",
     "url": "https://github.com/crimson-education/rv-pdf-viewer"
   },
-  "version": "0.8.0"
+  "version": "0.8.1"
 }

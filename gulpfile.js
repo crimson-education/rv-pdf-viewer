@@ -24,6 +24,8 @@ const gulp = require("gulp");
 const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
+const cleanCSS = require("gulp-clean-css");
+const htmlmin = require("gulp-htmlmin");
 const mkdirp = require("mkdirp");
 const path = require("path");
 const rimraf = require("rimraf");
@@ -2431,3 +2433,114 @@ gulp.task(
     "typestest"
   )
 );
+
+gulp.task(
+  "rv",
+  gulp.series(
+    "clean",
+    createBuildNumber,
+    "locale",
+    function scriptingMinified() {
+      const defines = builder.merge(DEFINES, { MINIFIED: true, GENERIC: true });
+      return merge([
+        buildDefaultPreferences(defines, "minified/"),
+        createTemporaryScriptingBundle(defines),
+      ]);
+    },
+    function createMinified() {
+      console.log();
+      console.log("### Creating minified viewer");
+      const defines = builder.merge(DEFINES, { MINIFIED: true, GENERIC: true });
+
+      return buildRvMinified(defines, MINIFIED_DIR);
+    },
+    async function compressMinified(done) {
+      await parseRvMinified(MINIFIED_DIR);
+      done();
+    }
+  )
+);
+
+function buildRvMinified(defines, dir) {
+  rimraf.sync(dir);
+
+  return merge([
+    createMainBundle(defines).pipe(gulp.dest(dir + "build")),
+    createWorkerBundle(defines).pipe(gulp.dest(dir + "build")),
+    createWebBundle(defines, {
+      defaultPreferencesDir: defines.SKIP_BABEL
+        ? "minified/"
+        : "minified-legacy/",
+    }).pipe(gulp.dest(dir + "web")),
+    gulp
+      .src(["web/images/*.{png,svg,gif}"], { base: "web/" })
+      .pipe(gulp.dest(dir + "web")),
+    gulp
+      .src(["web/locale/*/viewer.properties", "web/locale/locale.properties"], {
+        base: "web/",
+      })
+      .pipe(gulp.dest(dir + "web")),
+    createStandardFontBundle().pipe(gulp.dest(dir + "web/standard_fonts")),
+
+    preprocessHTML("web/viewer.html", defines)
+      .pipe(htmlmin({ collapseWhitespace: true }))
+      .pipe(gulp.dest(dir + "web")),
+    preprocessCSS("web/viewer.css", defines)
+      .pipe(
+        postcss([
+          postcssLogical({ preserve: true }),
+          postcssDirPseudoClass(),
+          autoprefixer(AUTOPREFIXER_CONFIG),
+        ])
+      )
+      .pipe(cleanCSS())
+      .pipe(gulp.dest(dir + "web")),
+  ]);
+}
+
+async function parseRvMinified(dir) {
+  const pdfFile = fs.readFileSync(dir + "/build/pdf.js").toString();
+  const pdfWorkerFile = fs
+    .readFileSync(dir + "/build/pdf.worker.js")
+    .toString();
+  const viewerFiles = {
+    "pdf.js": pdfFile,
+    "viewer.js": fs.readFileSync(dir + "/web/viewer.js").toString(),
+  };
+
+  console.log();
+  console.log("### Minifying js files");
+
+  const Terser = require("terser");
+  const options = {
+    compress: {
+      // V8 chokes on very long sequences, work around that.
+      sequences: false,
+    },
+    keep_classnames: true,
+    keep_fnames: true,
+  };
+
+  fs.writeFileSync(
+    dir + "/web/pdf.viewer.js",
+    (await Terser.minify(viewerFiles, options)).code
+  );
+  fs.writeFileSync(
+    dir + "/build/pdf.min.js",
+    (await Terser.minify(pdfFile, options)).code
+  );
+  fs.writeFileSync(
+    dir + "/build/pdf.worker.min.js",
+    (await Terser.minify(pdfWorkerFile, options)).code
+  );
+
+  console.log();
+  console.log("### Cleaning js files");
+
+  fs.unlinkSync(dir + "/web/viewer.js");
+  fs.unlinkSync(dir + "/build/pdf.js");
+  fs.unlinkSync(dir + "/build/pdf.worker.js");
+
+  fs.renameSync(dir + "/build/pdf.min.js", dir + "/build/pdf.js");
+  fs.renameSync(dir + "/build/pdf.worker.min.js", dir + "/build/pdf.worker.js");
+}
